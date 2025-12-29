@@ -8,12 +8,12 @@
 
 <div align="center">
 
-### 🌌 Access the Physics Engine
+### Access the Physics Engine
 
 Enchan API is hosted on a secure cloud environment.  
 Click below to view the full documentation and endpoint specifications.
 
-## [👉 Enter Enchan API Portal](https://enchan-api-82345546010.us-central1.run.app)
+## [Enter Enchan API Portal](https://enchan-api-82345546010.us-central1.run.app)
 
 `https://enchan-api-82345546010.us-central1.run.app`
 
