@@ -448,15 +448,15 @@ if __name__ == "__main__":
  ENCHAN API BENCHMARK REPORT
 ========================================
  [STATUS]      Success (200 OK)
- [LATENCY]     0.8833s (Network+Processing)
+ [LATENCY]     0.8453s (Network+Processing)
  [PHYSICS]     N/A (Fast Path)
 ----------------------------------------
- [RESULT]      Max-Cut: 6913 / 10000 edges
- [EFFICIENCY]  69.13% Cut Rate
+ [RESULT]      Max-Cut: 6886 / 10000 edges
+ [EFFICIENCY]  68.86% Cut Rate
  [BASELINE]    Random would be ~50.0%
- [GAIN]        +19.13% over random
+ [GAIN]        +18.86% over random
 ----------------------------------------
- [BALANCE]     0.5430 (Spin Balance)
+ [BALANCE]     0.5390 (Spin Balance)
 ========================================
 
 ```
