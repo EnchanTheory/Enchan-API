@@ -366,29 +366,35 @@ import requests
 import random
 import time
 
-# --- Configuration ---
 API_URL = "https://enchan-api-82345546010.us-central1.run.app/v1/solve"
-N = 2000           # Public API Safe Limit
-EDGE_COUNT = 10000 # Dense enough to demonstrate optimization
+N = 2000
+EDGE_COUNT = 10000
 
 def run_benchmark():
     print(f"1. Generating Dense Random Graph (Erdos-Renyi)...")
     print(f"   - Nodes: {N}")
     print(f"   - Edges: {EDGE_COUNT}")
     
-    # Generate random edges
-    edges = [[random.randint(0, N-1), random.randint(0, N-1)] for _ in range(EDGE_COUNT)]
+    # --- Generate unique undirected edges (no self-loops) ---
+    edges = set()
+    rand = random.Random(42)
+    while len(edges) < EDGE_COUNT:
+        u = rand.randint(0, N - 1)
+        v = rand.randint(0, N - 1)
+        if u != v:
+            edges.add(tuple(sorted((u, v))))
+    edges = [list(e) for e in edges]
     
     payload = {
         "graph": {"edges": edges, "N": N},
-        "control": {"total_time": 5.0} # Request 5s simulation
+        "control": {"total_time": 5.0},
+        "seed": 42
     }
 
     print("2. Sending Request to Enchan Core...")
     start_time = time.time()
     
     try:
-        # Request with timeout safety
         response = requests.post(API_URL, json=payload, timeout=60)
         response.raise_for_status()
         latency = time.time() - start_time
@@ -397,16 +403,13 @@ def run_benchmark():
         metrics = data.get("metrics", {})
         audit = data.get("audit", {})
         
-        # Calculate Performance Indicators
-        cut_val = metrics.get('cut', 0)
+        cut_val = metrics.get("cut", 0)
         edges_total = len(edges)
-        optimization_ratio = (cut_val / edges_total) * 100
-        random_baseline = 50.0
-        improvement = optimization_ratio - random_baseline
-
-        # Parse compute time safely
-        phys_time = audit.get('total_time')
-        phys_time_str = f"{phys_time}s" if phys_time is not None else "N/A (Fast Path)"
+        optimization_ratio = (cut_val / edges_total) * 100 if edges_total else 0
+        improvement = optimization_ratio - 50.0
+        plus_ratio = metrics.get("plus_ratio", 0.5)
+        phys_time = audit.get("total_time")
+        phys_time_str = f"{phys_time}s" if phys_time else "N/A (Fast Path)"
 
         print("\n" + "="*40)
         print(" ENCHAN API BENCHMARK REPORT")
@@ -420,7 +423,7 @@ def run_benchmark():
         print(f" [BASELINE]    Random would be ~50.0%")
         print(f" [GAIN]        +{improvement:.2f}% over random")
         print("-" * 40)
-        print(f" [BALANCE]     {metrics.get('plus_ratio'):.4f} (Spin Balance)")
+        print(f" [BALANCE]     {plus_ratio:.4f} (Spin Balance)")
         print("="*40 + "\n")
 
     except Exception as e:
