@@ -335,6 +335,129 @@ On this large-scale real-world graph, Enchan achieved a **+44.08%** improvement,
 
 *Note: Tabu Search is a general metaheuristic algorithm. The comparison presented here is against a standard representative implementation used as a research baseline.*
 
+### 6.2 High-Throughput Synthetic Benchmark (Ising Spin Glass)
+
+To verify the "Ground State Search" capability under pure physics constraints, we conducted a stress test using a dense synthetic Ising model. This test measures raw solver throughput on local hardware, isolating the algorithm's efficiency from network latency.
+
+**Test Protocol:**
+* **Target:** Ising Hamiltonian / Max-Cut
+* **Scale:** N=10,000 Spins (499,009 Interactions)
+* **Comparison:** Enchan (Cosmic Kernel) vs. Parallel Tabu Search (16 Threads)
+* **Hardware:** AMD Ryzen 7 5700X (Local Execution)
+
+**Result Audit:**
+Enchan achieved a **1136x speedup** while finding a **superior ground state** (Lower Energy) compared to the multi-threaded reference solver.
+
+<img src="./static/ising202512301247.png" alt="High-Throughput Synthetic Benchmark (Ising Spin Glass)" class="report-img" onerror="this.style.display='none'">
+
+> **Note:** The result above is from the **Local Kernel** execution to demonstrate algorithmic peak performance. The Public API version is subject to network latency and resource caps (N=3000).
+
+### 6.3 API Verification Script (Python)
+
+Since the N=10,000 benchmark exceeds the Public API limit (N=3,000), we provide a Python script to verify Enchan's optimization logic and throughput within the safe limit (N=2,000).
+
+**How to Run:**
+
+1. Save the following code as `verify_benchmark.py`.
+2. Run the command: `python verify_benchmark.py`
+
+```python
+import requests
+import random
+import time
+
+# --- Configuration ---
+API_URL = "https://enchan-api-82345546010.us-central1.run.app/v1/solve"
+N = 2000           # Public API Safe Limit
+EDGE_COUNT = 10000 # Dense enough to demonstrate optimization
+
+def run_benchmark():
+    print(f"1. Generating Dense Random Graph (Erdos-Renyi)...")
+    print(f"   - Nodes: {N}")
+    print(f"   - Edges: {EDGE_COUNT}")
+    
+    # Generate random edges
+    edges = [[random.randint(0, N-1), random.randint(0, N-1)] for _ in range(EDGE_COUNT)]
+    
+    payload = {
+        "graph": {"edges": edges, "N": N},
+        "control": {"total_time": 5.0} # Request 5s simulation
+    }
+
+    print("2. Sending Request to Enchan Core...")
+    start_time = time.time()
+    
+    try:
+        # Request with timeout safety
+        response = requests.post(API_URL, json=payload, timeout=60)
+        response.raise_for_status()
+        latency = time.time() - start_time
+        
+        data = response.json()
+        metrics = data.get("metrics", {})
+        audit = data.get("audit", {})
+        
+        # Calculate Performance Indicators
+        cut_val = metrics.get('cut', 0)
+        edges_total = len(edges)
+        optimization_ratio = (cut_val / edges_total) * 100
+        random_baseline = 50.0
+        improvement = optimization_ratio - random_baseline
+
+        # Parse compute time safely
+        phys_time = audit.get('total_time')
+        phys_time_str = f"{phys_time}s" if phys_time is not None else "N/A (Fast Path)"
+
+        print("\n" + "="*40)
+        print(" ENCHAN API BENCHMARK REPORT")
+        print("="*40)
+        print(f" [STATUS]      Success (200 OK)")
+        print(f" [LATENCY]     {latency:.4f}s (Network+Processing)")
+        print(f" [PHYSICS]     {phys_time_str}")
+        print("-" * 40)
+        print(f" [RESULT]      Max-Cut: {int(cut_val)} / {edges_total} edges")
+        print(f" [EFFICIENCY]  {optimization_ratio:.2f}% Cut Rate")
+        print(f" [BASELINE]    Random would be ~50.0%")
+        print(f" [GAIN]        +{improvement:.2f}% over random")
+        print("-" * 40)
+        print(f" [BALANCE]     {metrics.get('plus_ratio'):.4f} (Spin Balance)")
+        print("="*40 + "\n")
+
+    except Exception as e:
+        print(f"\n[ERROR] Benchmark Failed: {e}")
+        if 'response' in locals():
+            print(f"Server Message: {response.text}")
+
+if __name__ == "__main__":
+    run_benchmark()
+
+```
+
+**Expected Output:**
+
+```text
+1. Generating Dense Random Graph (Erdos-Renyi)...
+   - Nodes: 2000
+   - Edges: 10000
+2. Sending Request to Enchan Core...
+
+========================================
+ ENCHAN API BENCHMARK REPORT
+========================================
+ [STATUS]      Success (200 OK)
+ [LATENCY]     0.8833s (Network+Processing)
+ [PHYSICS]     N/A (Fast Path)
+----------------------------------------
+ [RESULT]      Max-Cut: 6913 / 10000 edges
+ [EFFICIENCY]  69.13% Cut Rate
+ [BASELINE]    Random would be ~50.0%
+ [GAIN]        +19.13% over random
+----------------------------------------
+ [BALANCE]     0.5430 (Spin Balance)
+========================================
+
+```
+
 ---
 
 ## 7. License & Restrictions
