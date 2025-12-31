@@ -368,102 +368,100 @@ Since the N=10,000 benchmark exceeds the Public API limit (N=3,000), we provide 
 
 ```python
 import requests
-import random
 import time
 
+# --- Configuration ---
 API_URL = "https://enchan-api-82345546010.us-central1.run.app/v1/solve"
-N = 2000
-EDGE_COUNT = 10000
 
 def run_benchmark():
-    print(f"1. Generating Dense Random Graph (Erdos-Renyi)...")
-    print(f"   - Nodes: {N}")
-    print(f"   - Edges: {EDGE_COUNT}")
-    
-    # --- Generate unique undirected edges (no self-loops) ---
-    edges = set()
-    rand = random.Random(42)
-    while len(edges) < EDGE_COUNT:
-        u = rand.randint(0, N - 1)
-        v = rand.randint(0, N - 1)
-        if u != v:
-            edges.add(tuple(sorted((u, v))))
-    edges = [list(e) for e in edges]
-    
+    # Parameters for Server-Side Graph Generation
+    N = 2000
+    DENSITY = 0.005  # ≈ 10,000 edges
+
     payload = {
-        "graph": {"edges": edges, "N": N},
+        "graph": {"N": N, "density": DENSITY},
         "control": {"total_time": 5.0},
         "seed": 42
     }
 
-    print("2. Sending Request to Enchan Core...")
-    start_time = time.time()
-    
+    print(f"1. Triggering Server-Side Generation (N={N}, density={DENSITY})...")
+    start_wall = time.time()
+
     try:
+        # Public preview: no authentication required
         response = requests.post(API_URL, json=payload, timeout=60)
         response.raise_for_status()
-        latency = time.time() - start_time
-        
-        data = response.json()
+        end_wall = time.time()
+
+        try:
+            data = response.json()
+        except ValueError:
+            print("[ERROR] Invalid JSON response from server.")
+            print(response.text[:200])
+            return
+
         metrics = data.get("metrics", {})
-        audit = data.get("audit", {})
-        
-        cut_val = metrics.get("cut", 0)
-        edges_total = len(edges)
-        optimization_ratio = (cut_val / edges_total) * 100 if edges_total else 0
-        improvement = optimization_ratio - 50.0
-        plus_ratio = metrics.get("plus_ratio", 0.5)
-        phys_time = audit.get("total_time")
-        phys_time_str = f"{phys_time}s" if phys_time else "N/A (Fast Path)"
+        timing = data.get("TIMING", {})
+        env = data.get("ENV", {}).get("runtime", {})
 
-        print("\n" + "="*40)
-        print(" ENCHAN API BENCHMARK REPORT")
-        print("="*40)
-        print(f" [STATUS]      Success (200 OK)")
-        print(f" [LATENCY]     {latency:.4f}s (Network+Processing)")
-        print(f" [PHYSICS]     {phys_time_str}")
-        print("-" * 40)
-        print(f" [RESULT]      Max-Cut: {int(cut_val)} / {edges_total} edges")
-        print(f" [EFFICIENCY]  {optimization_ratio:.2f}% Cut Rate")
-        print(f" [BASELINE]    Random would be ~50.0%")
-        print(f" [GAIN]        +{improvement:.2f}% over random")
-        print("-" * 40)
-        print(f" [BALANCE]     {plus_ratio:.4f} (Spin Balance)")
-        print("="*40 + "\n")
+        total_latency = end_wall - start_wall
+        pure_solve_time = timing.get("total_wall_time", 0.0)
 
-    except Exception as e:
+        print("\n" + "═" * 55)
+        print("   ENCHAN ADVANCED SYSTEM & PHYSICS REPORT")
+        print("═" * 55)
+
+        # --- 1. System Environment Proof ---
+        print(f" [PYTHON]      {env.get('python_version', 'N/A')}")
+        print(f" [CPU CORES]   {env.get('cpu_count', 'N/A')} cores")
+        print(f" [CPU FREQ]    {env.get('cpu_freq', 'N/A')} MHz")
+        print(f" [MEMORY]      {env.get('memory_used_MB')} / {env.get('memory_total_MB')} MB")
+        print(f" [INSTANCE ID] {env.get('container_id', 'N/A')}")
+        print("-" * 55)
+
+        # --- 2. Performance Metrics ---
+        print(f" [LATENCY]     {total_latency:.3f}s (Round Trip)")
+        print(f" [SOLVE TIME]  {pure_solve_time:.3f}s (Core Physics Engine)")
+        print(f" [OVERHEAD]    {total_latency - pure_solve_time:.3f}s (Network/Cold Start)")
+        print("-" * 55)
+
+        # --- 3. Physics Results ---
+        cut = metrics.get("cut", 0)
+        edges_expected = N * (N - 1) / 2 * DENSITY  # dynamic normalization
+        gain = (cut / edges_expected * 100 - 50)
+
+        print(f" [RESULT]      Max-Cut Score: {int(cut)}")
+        print(f" [GAIN]        {gain:+.2f}% vs expected baseline")
+        print("═" * 55 + "\n")
+
+    except requests.exceptions.Timeout:
+        print("\n[ERROR] Request timed out. Try reducing N or increasing timeout.")
+    except requests.exceptions.RequestException as e:
         print(f"\n[ERROR] Benchmark Failed: {e}")
-        if 'response' in locals():
-            print(f"Server Message: {response.text}")
 
 if __name__ == "__main__":
     run_benchmark()
-
 ```
 
 **Expected Output:**
 
 ```text
-1. Generating Dense Random Graph (Erdos-Renyi)...
-   - Nodes: 2000
-   - Edges: 10000
-2. Sending Request to Enchan Core...
-
-========================================
- ENCHAN API BENCHMARK REPORT
-========================================
- [STATUS]      Success (200 OK)
- [LATENCY]     0.8453s (Network+Processing)
- [PHYSICS]     N/A (Fast Path)
-----------------------------------------
- [RESULT]      Max-Cut: 6886 / 10000 edges
- [EFFICIENCY]  68.86% Cut Rate
- [BASELINE]    Random would be ~50.0%
- [GAIN]        +18.86% over random
-----------------------------------------
- [BALANCE]     0.5390 (Spin Balance)
-========================================
-
+═══════════════════════════════════════════════════════
+   ENCHAN ADVANCED SYSTEM & PHYSICS REPORT
+═══════════════════════════════════════════════════════
+ [PYTHON]      3.12.12
+ [CPU CORES]   2 cores
+ [CPU FREQ]    3099.187 MHz
+ [MEMORY]      246.78 / 1073.74 MB
+ [INSTANCE ID] container0
+-------------------------------------------------------
+ [LATENCY]     1.222s (Round Trip)
+ [SOLVE TIME]  0.011s (Core Physics Engine)
+ [OVERHEAD]    1.211s (Network/Cold Start)
+-------------------------------------------------------
+ [RESULT]      Max-Cut Score: 6847
+ [GAIN]        +18.50% vs expected baseline
+═══════════════════════════════════════════════════════
 ```
 
 ---
