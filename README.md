@@ -380,7 +380,7 @@ def run_benchmark():
 
     payload = {
         "graph": {"N": N, "density": DENSITY},
-        "control": {"total_time": 5.0},
+        "control": {"total_time": 35.0},
         "seed": 42
     }
 
@@ -410,6 +410,12 @@ def run_benchmark():
         print("\n" + "═" * 55)
         print("   ENCHAN ADVANCED SYSTEM & PHYSICS REPORT")
         print("═" * 55)
+        
+        # --- 0. Problem Scale (Added) ---
+        print(f" [NODES]       {N} nodes")
+        print(f" [DENSITY]     {DENSITY*100:.2f}%")
+        print(f" [SIM TIME]    {payload['control']['total_time']:.1f} virtual sec")
+        print("-" * 55)
 
         # --- 1. System Environment Proof ---
         print(f" [PYTHON]      {env.get('python_version', 'N/A')}")
@@ -449,18 +455,22 @@ if __name__ == "__main__":
 ═══════════════════════════════════════════════════════
    ENCHAN ADVANCED SYSTEM & PHYSICS REPORT
 ═══════════════════════════════════════════════════════
+ [NODES]       2000 nodes
+ [DENSITY]     0.50%
+ [SIM TIME]    35.0 virtual sec
+-------------------------------------------------------
  [PYTHON]      3.12.12
  [CPU CORES]   2 cores
- [CPU FREQ]    3099.187 MHz
- [MEMORY]      246.78 / 1073.74 MB
+ [CPU FREQ]    3099.2 MHz
+ [MEMORY]      252.51 / 1073.74 MB
  [INSTANCE ID] container0
 -------------------------------------------------------
- [LATENCY]     1.222s (Round Trip)
- [SOLVE TIME]  0.011s (Core Physics Engine)
- [OVERHEAD]    1.211s (Network/Cold Start)
+ [LATENCY]     1.053s (Round Trip)
+ [SOLVE TIME]  0.084s (Core Physics Engine)
+ [OVERHEAD]    0.969s (Network/Cold Start)
 -------------------------------------------------------
- [RESULT]      Max-Cut Score: 6847
- [GAIN]        +18.50% vs expected baseline
+ [RESULT]      Max-Cut Score: 7085
+ [GAIN]        +20.89% vs expected baseline
 ═══════════════════════════════════════════════════════
 ```
 
