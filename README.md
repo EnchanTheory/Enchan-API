@@ -100,6 +100,84 @@ curl -X POST "https://enchan-api-82345546010.us-central1.run.app/v1/solve" \
 
 Benefit: Reduces payload size from ~1MB to <1KB, drastically improving performance for large graphs up to N=3,000.
 
+For users who want to test with **real datasets or custom graphs**, see the next section:  
+[Local File Input Example (Custom Graph)](#local-file-input-example-custom-graph)
+
+## Local File Input Example (Custom Graph)
+
+You can also solve your **own graph file** (for example, an edge list saved locally).  
+Each line should contain two integers representing an undirected edge:
+
+**Example file:** `graph_edges.txt`
+```
+
+0 1
+1 2
+2 3
+3 0
+
+```
+
+**Python example:**
+```python
+import requests
+
+API_URL = "https://api.enchantheory.dev/solveMaxCut"  # or your Cloud Run endpoint
+
+# Load edges from a local text file
+edges = []
+with open("graph_edges.txt") as f:
+    for line in f:
+        if line.strip() and not line.startswith("#"):
+            u, v = map(int, line.split())
+            edges.append([u, v])
+
+payload = {
+    "graph": {
+        "edges": edges,
+        "N": max(max(u, v) for u, v in edges) + 1
+    },
+    "control": {"total_time": 10.0},
+    "seed": 42
+}
+
+response = requests.post(API_URL, json=payload)
+print(response.json())
+```
+
+**Command-line (curl) equivalent:**
+
+```bash
+curl -X POST "https://api.enchantheory.dev/solveMaxCut" \
+  -H "Content-Type: application/json" \
+  -d @payload.json
+```
+
+> Save your edges as `graph_edges.txt`, and optionally export your JSON payload as `payload.json`.
+> You can generate it using the Python script above if needed.
+
+---
+
+### Example Output
+
+```json
+{
+  "S": [-0.99, 1.0, 0.98, ...],
+  "outputs": { "spins": [-1, 1, 1, ...] },
+  "metrics": { "cut": 2.0, "plus_ratio": 0.66 },
+  "audit": { "steps": 700, "total_time": 10.0 }
+}
+```
+
+---
+
+### Tips
+
+* Each line in `graph_edges.txt` should represent a single undirected edge:
+  two node indices separated by a space.
+* Nodes must be 0-indexed integers (`0 <= u, v < N`).
+* You can use datasets like [WEB-Google](https://snap.stanford.edu/data/web-Google.html) by converting it into this format.
+
 #### Request Parameters
 
 | Field | Type | Required | Description | Constraints |
