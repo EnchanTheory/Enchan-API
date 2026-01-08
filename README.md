@@ -100,9 +100,6 @@ curl -X POST "https://enchan-api-82345546010.us-central1.run.app/v1/solve" \
 
 Benefit: Reduces payload size from ~1MB to <1KB, drastically improving performance for large graphs up to N=3,000.
 
-For users who want to test with **real datasets or custom graphs**, see the next section:  
-[Local File Input Example (Custom Graph)](#local-file-input-example-custom-graph)
-
 ## Local File Input Example (Custom Graph)
 
 You can also solve your **own graph file** (for example, an edge list saved locally).  
