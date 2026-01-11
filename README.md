@@ -76,6 +76,7 @@ This Public API is provided for free as a **Research Preview** and is subject to
 | :--- | :--- | :--- |
 | `POST` | **/solve** | **[Core]** Noise-resilient solver. Executes physical convergence. *(Note: Warm Start/initial_state is currently disabled in this preview)* |
 | `POST` | **/scan_resonance** | **[Utility]** Structural anomaly detection. Experimental structural probing utility. Returns candidate nodes showing dynamic sensitivity. |
+| `POST` | **/tsp** | **[App]** Earth-scale TSP solver. Deterministic route optimization on 2D coordinates (Earth/Plane). |
 
 *Note: The API is stateless. No data is stored on the server after computation.*
 
@@ -276,6 +277,61 @@ curl -X POST "https://enchan-api-82345546010.us-central1.run.app/v1/scan_resonan
 ```
 
 * **Use Case:** These nodes may be used as optional hints for exploratory re-solving strategies.
+
+## Enchan Earth Solver (TSP)
+
+**Endpoint:** `POST /v1/tsp`
+
+A deterministic physics solver designed for logistics and geospatial optimization. It finds the optimal Hamiltonian path (Traveling Salesman Problem) by minimizing the energy state on the **Earth's curvature (Haversine metric)**.
+
+* **Physics:** Uses deterministic relaxation (Enchan Field), ensuring reproducible results for the same seed.
+* **Metric:** Automatically calculates Great-circle distance for latitude/longitude inputs.
+* **Constants:** Distances are calculated using the **Earth's mean radius $R = 6371.0 \text{ km}$**.
+
+### Request Parameters
+
+| Parameter | Type | Required | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `cities` | `List[List[float]]` | **Yes** | - | List of `[latitude, longitude]` coordinates. |
+| `total_time` | `float` | No | `10.0` | Physics simulation time budget (seconds). Larger values allow deeper convergence for complex maps. |
+| `use_earth_metric` | `boolean` | No | `true` | If `true`, calculates distance on Earth sphere (km). If `false`, uses Euclidean 2D distance. |
+| `seed` | `integer` | No | `42` | Random seed for reproducibility. |
+
+### Request Example
+```json
+{
+  "cities": [
+    [35.6895, 139.6917],  // Tokyo
+    [34.6937, 135.5023],  // Osaka
+    [43.0642, 141.3469],  // Sapporo
+    [26.2124, 127.6809]   // Okinawa
+  ],
+  "total_time": 10.0,
+  "use_earth_metric": true,
+  "seed": 42
+}
+```
+
+### Response Example
+
+```json
+{
+  "outputs": {
+    "order": [0, 1, 3, 2, 0],  // Optimized Route Indices
+    "distance": 4580.2         // Total Distance (km)
+  },
+  "metrics": {
+    "confidence": 1.0000,      // 1.0 = Perfect Global Minimum (Crystal State)
+    "tsp_distance": 4580.2,
+    "unit": "km"
+  },
+  "audit": {
+    "visualization": {
+       "explanation": "Optimal Earth tour found. Distance: 4580.2 km. Confidence: 1.0000."
+    }
+  }
+}
+```
 
 ---
 
