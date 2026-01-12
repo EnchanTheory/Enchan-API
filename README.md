@@ -292,10 +292,10 @@ A deterministic physics solver designed for logistics and geospatial optimizatio
 
 | Parameter | Type | Required | Default | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `cities` | `List[List[float]]` | **Yes** | - | List of `[latitude, longitude]` coordinates. |
-| `total_time` | `float` | No | `10.0` | Physics simulation time budget (seconds). |
-| `use_earth_metric` | `boolean` | No | `true` | If `true`, calculates distance on Earth sphere (km). If `false`, uses Euclidean 2D distance. |
-| `seed` | `integer` | No | `42` | Random seed for reproducibility. |
+| `cities` | `List[List[float]]` | **Yes** | - | List of `[latitude, longitude]` coordinates |
+| `use_earth_metric` | `boolean` | No | `true` | If `true`, calculates distance on Earth sphere (km). If `false`, uses Euclidean 2D distance |
+| `seed` | `integer` | No | `42` | Random seed for reproducibility |
+| `K` | `integer` | No | `15` | Neighborhood connectivity parameter (trade-off between local and global optimization) |
 
 ### Request Example
 ```json
