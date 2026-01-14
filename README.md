@@ -278,9 +278,7 @@ curl -X POST "https://enchan-api-82345546010.us-central1.run.app/v1/scan_resonan
 
 * **Use Case:** These nodes may be used as optional hints for exploratory re-solving strategies.
 
-## Enchan Earth Solver (TSP)
-
-**Endpoint:** `POST /v1/tsp`
+### Enchan Earth Solver (TSP): `/tsp`
 
 The **Enchan Earth Solver** is a deterministic, physics-based engine for **Traveling Salesman Problem (TSP)** optimization on real-world geospatial data.
 It operates over the Earth's curvature (Haversine metric) and minimizes total route energy through deterministic Enchan Field dynamics.
