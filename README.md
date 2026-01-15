@@ -294,9 +294,9 @@ It operates over the Earth's curvature (Haversine metric) and minimizes total ro
 
 | Concept                       | Description                                                                                                                                                                                                 |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **K (Coupling Range)**        | Defines how many nearby cities each node interacts with. The theoretical range is **2 ≤ K ≤ N−1**, where `N` is the number of cities. Small K values produce local field coupling (fast, coarse), while large K values enable global coherence (slow, precise). |
+| **K (Coupling Range)**        | Sets the initial connectivity of the node network. Higher K creates a more complex initial structure but requires more processing. |
 | **Auto-Tuning (Client Only)** | Users can dynamically explore multiple K values to identify the configuration that yields the most stable or shortest route for their dataset. *(This process is performed outside the API, not within the endpoint itself.)*                                                |
-| **Refine Mode (`refine`)**    | Enables the *deterministic tunneling phase*, which geometrically re-links inefficient routes after convergence — similar to quantum tunneling, but entirely deterministic.                                  |
+| **Refine Mode (`refine`)**    | Activates a mathematical refinement phase. It applies deterministic geometric swaps and "kicks" to untangle the route and improve accuracy after the initial field stabilization.                                  |
 | **Total Determinism**         | For the same parameters and seed, results are perfectly reproducible across all environments.                                                                                                               |
 
 ---
@@ -308,7 +308,7 @@ It operates over the Earth's curvature (Haversine metric) and minimizes total ro
 | `cities`           | `List[List[float]]` | **Yes**    | —       | List of `[latitude, longitude]` coordinates.                                        |
 | `use_earth_metric` | `boolean`           | No         | `true`  | Uses Haversine (great-circle) metric. If `false`, applies Euclidean distance.       |
 | `K`                | `integer`           | No         | `15`    | Field coupling range; higher values consider broader spatial interactions.          |
-| `refine`           | `boolean`           | No         | `false` | Enables deterministic tunneling refinement (increases accuracy at cost of runtime). |
+| `refine`           | `boolean`           | No         | `false` | Enables mathematical refinement using deterministic swaps and kicks to improve route accuracy. |
 | `seed`             | `integer`           | No         | `314`   | Seed for deterministic reproducibility.                                             |
 | `total_time`       | `float`             | Deprecated | —       | No longer required; internal stabilization replaces time evolution.                 |
 
@@ -354,8 +354,8 @@ It operates over the Earth's curvature (Haversine metric) and minimizes total ro
 
 | Mode             | Description                                                                                               | Analogy                                 | Speed    | Accuracy |
 | ---------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------- | -------- |
-| `refine = false` | Uses pure Enchan field relaxation (∇²S dynamics). Fast but may stabilize in local minima.                 | Continuous wave relaxation              | Fast   | Moderate |
-| `refine = true`  | Activates *deterministic tunneling* via phase inversion, enabling convergence across discrete topologies. | Quantum-like re-linking (deterministic) | Slower | High  |
+| `refine = false` | Fast mode. Generates a route based on raw Enchan field relaxation.                 | Continuous field ordering              | Fast   | Moderate |
+| `refine = true`  | Precision mode. Performs iterative geometric improvements. | Deterministic 2-opt & Kicks | Slower | High  |
 
 The refine phase performs a sequence of deterministic *kicks*, reconnecting inefficient edges until energy stops decreasing.
 
@@ -376,8 +376,8 @@ The refine phase performs a sequence of deterministic *kicks*, reconnecting inef
 
 | Parameter          | Role                    | Typical Range | Effect                                              |
 | ------------------ | ----------------------- | ------------- | --------------------------------------------------- |
-| `K`                | Coupling neighborhood   | 2 – (N − 1)   | Balances local vs global optimization               |
-| `refine`           | Deterministic tunneling | True/False    | Enables phase inversion for high precision          |
+| `K`                | Neighborhood range   | 2 – (N − 1)   | Balances initial local vs global focus               |
+| `refine`           | Mathematical optimization | True/False    | Uses geometric kicks to achieve higher precision          |
 | `use_earth_metric` | Distance model          | True/False    | Choose Haversine or Euclidean                       |
 | `seed`             | Determinism control     | int           | Ensures reproducibility                             |
 | *(Client only)*    | Auto-tune               | —             | Dynamically scans and selects the most stable or optimal `K` value outside the API.                                 |
