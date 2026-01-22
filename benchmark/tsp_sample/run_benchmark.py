@@ -76,7 +76,7 @@ def run_benchmark():
     
     payload = {
         "cities": coords.tolist(),
-        "use_earth_metric": False,
+        "use_earth_metric": True,
         "seed": 314,
         "K": K,
         "industrial_strict": True,

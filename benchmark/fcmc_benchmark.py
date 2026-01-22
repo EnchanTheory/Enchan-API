@@ -11,7 +11,7 @@ def run_extreme_challenge():
     # ══════════════════════════════════════════════════
     N = 2000
     DENSITY = 1.0
-    TOTAL_TIME = 35.0
+    TOTAL_TIME = 20.0
 
     payload = {
         "graph": {"N": N, "density": DENSITY},
