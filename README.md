@@ -3,7 +3,7 @@
 > **Interactive Physics Kernel & Runtime Environment**
 *(“Web OS” is used here as a metaphor. The actual system is a physics-based optimization kernel with an interactive shell.)*
 
-Enchan provides a browser-based CLI shell for direct interaction with the optimization engine. This runtime environment allows developers to prototype physical logic (Ising constraints), execute energy relaxation simulations, and verify kernel behavior in real-time without local setup.
+Enchan provides a browser-based CLI shell for direct interaction with the optimization engine. This runtime environment allows developers to prototype physical logic (Ising constraints), execute gravity-inspired energy relaxation simulations, and verify kernel behavior in real-time without local setup.
 
 [![Launch Web Shell](https://img.shields.io/badge/Launch-Web_Shell_%2F_Console-1f8ac0?style=for-the-badge&logo=googlechrome&logoColor=white)](https://enchan-api-82345546010.us-central1.run.app/shell/)
 
