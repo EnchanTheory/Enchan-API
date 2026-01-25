@@ -1,8 +1,9 @@
 # ENCHAN WEB OS
 
 > **Interactive Physics Kernel & Runtime Environment**
+*(“Web OS” is used here as a metaphor. The actual system is a physics-based optimization kernel with an interactive shell.)*
 
-Enchan Web OS provides a browser-based CLI shell for direct interaction with the optimization engine. This runtime environment allows developers to prototype physical logic (Ising constraints), execute energy relaxation simulations, and verify kernel behavior in real-time without local setup.
+Enchan provides a browser-based CLI shell for direct interaction with the optimization engine. This runtime environment allows developers to prototype physical logic (Ising constraints), execute energy relaxation simulations, and verify kernel behavior in real-time without local setup.
 
 [![Launch Web Shell](https://img.shields.io/badge/Launch-Web_Shell_%2F_Console-1f8ac0?style=for-the-badge&logo=googlechrome&logoColor=white)](https://enchan-api-82345546010.us-central1.run.app/shell/)
 
@@ -42,6 +43,8 @@ This API is fully optimized for **OpenAI GPT Actions**.
 ## Overview
 
 Enchan API (Research Preview) is a **physics-based optimization engine designed to demonstrate extreme robustness against noise and incomplete structures** inherent in field data.
+This research preview focuses on deterministic Ising/QUBO optimization and interactive experimentation.
+It does not yet claim general-purpose computation; instead, it provides a practical kernel for constraint-driven physics-based solving.
 
 While conventional combinatorial optimization solvers (such as Simulated Annealing or Tabu Search) struggle with "Noisy Real-world Data," Enchan aims to derive stable solutions without falling into local optima by utilizing relaxation processes unique to physical models.
 
