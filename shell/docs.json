@@ -2,11 +2,11 @@
   "help": [
     {"text": " ", "style": "text"},
     {"text": " ENCHAN WEB KERNEL", "style": "result"},
-    {"text": " UNIVERSAL PHYSICS COMPUTER", "style": "result"},
+    {"text": " PHYSICS OPTIMIZATION KERNEL", "style": "result"},
     {"text": " ========================================", "style": "system"},
     {"text": " System:", "style": "result"},
-    {"text": "   Enchan is a Web-based operating system where computation is performed by physical laws.", "style": "text"},
-    {"text": "   Logic, symbols, and programs are expressed as energy structures, not procedures.", "style": "text"},
+    {"text": "   Enchan is a gravity-inspired physics optimization kernel where computation emerges from energy relaxation.", "style": "text"},
+    {"text": "   Logic, symbols, and programs are expressed as constraint energy structures, not procedural instructions.", "style": "text"},
     {"text": " ", "style": "text"},
     {"text": " What you can do here:", "style": "result"},
     {"text": "   - Build logic gates (AND / OR / NOT)", "style": "text"},
@@ -30,7 +30,7 @@
   ],
   "docs": [
     {"text": " ", "style": "text"},
-    {"text": " ENCHAN: UNIVERSAL PHYSICS COMPUTER", "style": "result"},
+    {"text": " ENCHAN: PHYSICS OPTIMIZATION KERNEL", "style": "result"},
     {"text": " ========================================", "style": "system"},
     {"text": " 1. What is Enchan?", "style": "result"},
     {"text": "    Enchan is not a programming language in the traditional sense.", "style": "text"},
