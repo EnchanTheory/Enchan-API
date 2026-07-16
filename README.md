@@ -27,20 +27,6 @@ Click below to view the full documentation and endpoint specifications.
 
 ---
 
-## AI Integration (OpenAI GPTs)
-
-This API is fully optimized for **OpenAI GPT Actions**.
-
-### How to Connect
-1. Go to your GPT configuration page.
-2. Select **"Actions"** > **"Create new action"**.
-3. Click **"Import from URL"** and enter:
-   `https://enchan-api-82345546010.us-central1.run.app/openapi.json`
-
-*The API definitions will be automatically loaded, allowing the GPT to solve graph problems and perform structural analysis.*
-
----
-
 ## Overview
 
 Enchan API (Research Preview) is a **physics-based optimization engine designed to demonstrate extreme robustness against noise and incomplete structures** inherent in field data.
