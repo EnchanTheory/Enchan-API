@@ -1,121 +1,163 @@
-# Enchan: The Cosmic Solver - Technical Whitepaper
+# Enchan Web OS — Technical Whitepaper
 
-**Cosmology-Inspired Deterministic Graph Dynamics Engine**
+**Deterministic Physics Compute Kernel & Runtime for Topology-Adaptive Nonlinear Relaxation**
 
-*Author: Mitsuhiro Kobayashi*
+*Author: Mitsuhiro Kobayashi*  
+*Revision: 2026-09-06*
 
 > **IMPORTANT NOTICE REGARDING INTELLECTUAL PROPERTY & LICENSING**
-> This repository provides **API Endpoints only**. The core proprietary engine is not exposed. All materials, data, and API outputs are strictly governed by the **Enchan Research & Verification License v1.0**. 
+> This repository provides **public API endpoints and verification interfaces only**. The proprietary core implementation is not exposed. All materials, data, and API outputs are governed by the **Enchan Research & Verification License v1.0**.
+>
 > **RESTRICTION D:** The use of this documentation, API, or generated data for training, fine-tuning, or evaluating Artificial Intelligence or Machine Learning models is **STRICTLY PROHIBITED**. Commercial integration requires a separate license.
 
 ---
 
 ## 1. Executive Summary
 
-**Enchan (The Cosmic Solver)** is a physics-based, combinatorial optimization framework designed to solve NP-hard graph problems (e.g., Max-Cut) on standard hardware. It acts as the core engine powering **Enchan Web OS**, a browser-based interactive physics compute environment for real-time optimization prototyping.
+**Enchan Web OS** is an early-form physics compute kernel and runtime built around deterministic nonlinear field relaxation on graph-structured systems.
 
-While sharing conceptual lineage with continuous-variable, quantum-inspired algorithms like Simulated Bifurcation (SB), Enchan introduces a paradigm-shifting architectural concept: **topology-adaptive interaction laws inspired by astrophysics and Modified Newtonian Dynamics (MOND).** 
+Its most mature public application is **Enchan Cosmic**, an Ising / Max-Cut solver exposed through the public API. The same broader runtime also supports experimental structural analysis and routing applications. Max-Cut therefore serves as an important verification surface for the kernel, but it is not intended to define the entire scope of Enchan Web OS.
 
-Conventional heuristic solvers frequently collapse when confronted with real-world, scale-free networks containing massive hub nodes, requiring exhaustive manual hyperparameter tuning. Enchan resolves this by introducing a non-linear gravitational screening filter. This cosmology-inspired approach natively stabilizes scale-free optimization landscapes, guaranteeing robust, deterministic convergence without manual parameter tuning.
+The central computational idea is **topology-adaptive nonlinear response**: when local interaction intensity becomes highly concentrated, the effective response is screened rather than allowed to grow as an unrestricted linear aggregate. In the current Enchan Field interpretation, this behavior is described as a **finite-tension response of an interaction medium**.
 
-For readers familiar with Simulated Bifurcation (SB): Enchan replaces the conventional linear coupling assumption with topology-adaptive nonlinear interaction laws, eliminating hub-collapse failure modes without relying on stochastic noise injection.
+This whitepaper intentionally makes a narrower claim than earlier descriptions of Enchan:
 
----
+- Enchan is a deterministic classical compute system, not a quantum computer.
+- Deterministic relaxation, continuous-variable optimization, and physics-inspired Ising computation already have substantial prior art.
+- The research question is therefore not whether non-stochastic relaxation is possible, but whether Enchan's **topology-adaptive nonlinear screening**, observable behavior, reproducibility model, and low-resource implementation constitute a useful and distinguishable variant within that broader family.
+- No claim is made here that Enchan guarantees global optimality for arbitrary NP-hard problems, breaks known complexity limits, or outperforms every existing solver on every problem class.
 
-## 2. Bridging Cosmology and Computer Science
-
-To understand the core breakthrough of Enchan, we must trace its theoretical origins back to an unsolved mystery in astrophysics: the Missing Mass Problem.
-
-### 2.1 The Missing Mass and "Dark Matter"
-When observing galactic rotation, visible matter alone cannot account for the gravitational forces holding galaxies together. Mainstream cosmology hypothesizes **Dark Matter**—massive amounts of invisible particles injected into the models to force mathematical stability.
-* **The Computational Analog:** In standard Ising models and Simulated Bifurcation, complex scale-free networks (where massive hub nodes dominate) refuse to stabilize optimally. To force convergence and escape local minima, algorithms inject artificial stochastic thermal noise or arbitrary bias weights—computational "Dark Matter."
-
-### 2.2 The Structural Limitation of Conventional Optimization
-
-During large-scale experiments on real-world scale-free graphs, we repeatedly observed a recurring failure mode shared by many conventional optimization frameworks: massive hub nodes dominated the global interaction landscape, causing premature stabilization into shallow local minima.
-
-Existing approaches typically compensate for this instability through externally injected stochasticity, thermal annealing schedules, randomized perturbations, or extensive hyperparameter tuning.
-
-While highly effective in many practical settings, these methods suggested a deeper question:
-
-> What if the instability does not originate from insufficient randomness, but from the assumption that interaction laws should remain globally linear under extreme topological imbalance?
-
-This question ultimately motivated the exploration of topology-dependent non-linear interaction responses inspired by astrophysical stabilization problems.
-
-### 2.3 The "MOND" Alternative
-A competing physical hypothesis is Modified Newtonian Dynamics (MOND), which suggests Dark Matter is unnecessary. Instead, it posits that the fundamental interaction law of gravity changes (becomes non-linear) at extreme galactic scales to naturally stabilize the structure. *(Note: MOND [Milgrom, 1983] remains an active area of relativistic gravitational research and serves here purely as a mathematical inspiration for nonlinear damping functions, rather than a claim on cosmological truth).*
-* **The Computational Analog:** Enchan hypothesizes that we do not need artificial stochastic noise to stabilize complex graphs. Instead, we can dynamically modify the interaction laws between nodes based on local topology, natively suppressing the overwhelming influence of massive hubs.
-
-### 2.4 Boundary of Claims (What Enchan is NOT)
-To ensure rigorous academic and engineering evaluation, we define clear boundaries regarding this cosmological connection:
-* **NOT a Quantum Computer:** Enchan does not utilize quantum entanglement. It is a deterministic, classical physical simulation engine.
-* **NOT claiming new physics:** We do not claim to prove or disprove the existence of Dark Matter. MOND serves purely as a highly effective *conceptual inspiration* for a novel mathematical graph stabilization algorithm.
-
-### 2.5 The Enchan Field Concept
-
-Conventional graph optimization frameworks treat node interactions as isolated pairwise couplings.
-
-Enchan instead interprets optimization dynamics as evolution inside a continuous interaction medium (“Enchan Field”), where excessive hub concentration distorts the surrounding optimization landscape itself.
-
-In this interpretation, the MOND-inspired screening response should not be understood as arbitrary damping, but as a topology-dependent stabilization response of the interaction medium.
-
-Once stabilized, discrete binary structures emerge naturally through deterministic bifurcation dynamics rather than stochastic thermal collapse.
+The role of this document is to describe the **public computational surface, verification model, observed behavior, and claim boundaries** of Enchan Web OS. Deeper theoretical interpretation is handled separately in the Enchan Field papers.
 
 ---
 
-## 3. The Core Innovation: Topology-Adaptive Non-Linear Screening
+## 2. Theoretical Lineage and Claim Boundary
 
-The central bottleneck in optimizing scale-free networks using standard Ising solvers is the assumption of linear coupling. Massive hub nodes exert overwhelming influence, trapping the system in poor local optima. 
+### 2.1 From Astrophysical Inspiration to Computational Screening
 
-Enchan implements the MOND alternative computationally: **Hub-sensitive nonlinear interaction renormalization**. Instead of adding artificial noise, the interaction law itself changes according to the graph topology.
+The original Enchan development path was influenced by astrophysical stabilization problems, including the observation that simple linear interaction laws can become difficult to interpret when a system contains extreme concentration across scales.
 
-### 3.1 Generalized Mathematical Framework
-In standard continuous-variable models, the state $x_i$ evolves based on the linear local field $H_i = \sum_j W_{ij} x_j$. 
-Enchan introduces a proprietary non-linear screening function $\mu_i(H_i)$ modeled conceptually after MOND saturation:
+Modified Newtonian Dynamics (MOND) was one early conceptual reference because it provided a familiar example of a theory in which the effective response law becomes nonlinear in a particular regime.
 
-$$ \mu_i(H_i) \approx \frac{1}{1 + (|H_i|/a_0)^\alpha} $$
+For Enchan Web OS, however, **MOND is a historical and mathematical inspiration, not a cosmological claim and not the defining identity of the software**.
 
-*(where $a_0$ represents the critical threshold for hub suppression, and $\alpha$ controls the steepness of the non-linear attenuation).*
+The current computational interpretation is broader:
 
-The effective interaction force thus becomes non-linear. As the local field magnitude approaches the critical threshold $a_0$, the coupling is dynamically dampened. This isolates "galactic-scale" hub forces, allowing delicate "solar-system-scale" local structures to be optimized flawlessly without artificial stochastic noise.
+> A graph can be treated as an interaction medium. When local interaction intensity becomes over-concentrated, the medium responds nonlinearly, limiting domination by that concentration while allowing surrounding structure to continue evolving.
 
-### 3.2 High-Level Algorithm Pseudocode
-```text
-Initialize continuous state variables deterministically (LCG)
-Derive stability limits (dt, coupling) via scale-normalized physical stability priors
-Loop until convergence:
-    Compute linear local fields (SpMV)
-    Apply non-linear screening function (Topology-Adaptive MOND filter)
-    Integrate continuous dynamics (Symplectic formulation)
-    Apply phased bifurcation potential
-Project continuous variables to binary states
-```
+In the Enchan Field framework, this is described as **finite-tension nonlinear screening**.
 
-### 3.3 Zero-Tuning via Scale-Normalized Physical Priors
-Enchan eliminates the need for manual hyperparameter grid-search. The system computes the Courant-Friedrichs-Lewy (CFL) stability limit dynamically by mapping the graph's spatial connectivity scale against scale-normalized physical priors. This theoretically guarantees that the differential equations will remain stable and converge across any topology.
+### 2.2 Relation to Existing Optimization Families
+
+Enchan should be evaluated in the context of existing deterministic and physics-inspired optimization methods, including continuous spin relaxation, Hopfield-type dynamics, mean-field approaches, Simulated Bifurcation, Ising machines, nonlinear dynamical systems, and related heuristics.
+
+Accordingly, the following properties are **not claimed as unique by themselves**:
+
+- deterministic execution,
+- continuous-state relaxation,
+- bifurcation-like dynamics,
+- Ising / Max-Cut mapping,
+- physics-inspired computation,
+- use of nonlinear dynamics.
+
+The more specific research question is whether Enchan's combination of **topology-adaptive screening, hub-sensitive local response, deterministic public verification, and implementation characteristics** produces behavior that is meaningfully distinguishable from conventional formulations on relevant graph classes.
+
+### 2.3 What Enchan is NOT Claiming
+
+This whitepaper does **not** claim that:
+
+- Enchan is a quantum computer;
+- Enchan proves or disproves Dark Matter, MOND, or any other cosmological theory;
+- all conventional solvers fail on scale-free graphs;
+- randomness is necessary in competing methods;
+- every Enchan run reaches the global optimum;
+- arbitrary Max-Cut instances can be solved exactly in polynomial time;
+- the observed public API behavior alone proves a fundamentally new physical law or algorithmic complexity class.
+
+These boundaries are important because the public system is intentionally a black-box verification surface rather than a disclosure of the proprietary core implementation.
 
 ---
 
-## 4. Empirical Validation & Real-World Application
+## 3. Core Computational Concept: Finite-Tension Nonlinear Relaxation
 
-To ensure academic verifiability and practical applicability, Enchan has been rigorously tested against both synthetic payloads and massive real-world datasets. 
+### 3.1 Local Interaction Concentration
 
-> **API Documentation & Visual Proofs:** For comprehensive endpoint documentation, `curl` code samples, and visual audit logs of the benchmarks discussed below, please refer to the **[`README.md`](./README.md)** included in this repository.
+In a graph relaxation system, a node can receive aggregate influence from many neighbors. In strongly heterogeneous graphs, high-degree hubs can create large local interaction concentrations.
 
-### 4.1 Real-World Scale-Free Benchmark (SNAP Web-Graph)
-To validate the effectiveness of the MOND-inspired screening filter against hub collapse, Enchan was benchmarked against a standard metaheuristic baseline (**Tabu Search**) using the **SNAP Web-Google dataset** (875,713 nodes, 5,105,039 edges).
+A purely linear aggregation rule allows this concentration to scale directly with the local field. Enchan instead applies a nonlinear response so that sufficiently concentrated interaction is **screened rather than amplified without bound**.
 
-* **Baseline (Tabu Search):** +0.63% improvement vs. Random Baseline. (Failed to escape local optima due to hub dominance).
-* **Enchan (Cosmic Kernel):** **+44.08% improvement** vs. Random Baseline. 
-* **Conclusion:** Enchan's physics-based relaxation successfully traversed the high-dimensional optimization landscape of a real-world web graph, achieving a +44.08% improvement where the baseline remained trapped at +0.63%.
+The public conceptual model is:
 
-### 4.2 Public API Reproducibility (S-HASH)
-Because Enchan is 100% deterministic and isolated from floating-point parallel reduction chaos, running the exact payloads below via the **Public API (`/v1/solve`)** reproduces the identical **S-HASH** for the same generated graph and control parameters.
+1. represent the graph as an evolving continuous field;
+2. compute local interaction concentration from the graph state;
+3. apply a nonlinear, topology-sensitive response;
+4. evolve the field deterministically;
+5. read out the resulting structure for the target application.
 
-The `density` field is a fractional probability, not a percentage value. For example, `0.05` means 5%. The benchmark uses server-side graph generation, so reproducibility is identified by both the returned `graph_hash` and the returned `result_hash`.
+The exact proprietary update law, constants, integration details, and production implementation are intentionally not specified in this document.
 
-#### Sparse Random Graph
+### 3.2 Finite-Tension Interpretation
+
+The Enchan Field interpretation treats screening not as an arbitrary correction term but as the response of a medium with finite effective tension.
+
+Under this interpretation, local over-concentration changes the effective response of the surrounding field. In graph computation, a high-degree hub is therefore treated not merely as a node with many independent pairwise couplings, but as a localized concentration capable of altering the effective relaxation landscape.
+
+This interpretation provides a common language for the continuous field model and its discrete graph application without asserting that the graph variables and physical spacetime quantities are identical mathematical objects.
+
+### 3.3 Deterministic Relaxation
+
+The public Enchan solver is designed so that fixed inputs and control parameters produce fixed outputs under the published API implementation.
+
+Determinism is valuable for:
+
+- external verification,
+- regression testing,
+- reproducible benchmarking,
+- audit trails,
+- comparison of solver revisions.
+
+Determinism itself is not presented as proof of algorithmic novelty.
+
+---
+
+## 4. Enchan Web OS as a Kernel & Runtime
+
+Enchan Web OS should be understood as a **compute environment built around the Enchan relaxation kernel**, rather than as a single-purpose Max-Cut program.
+
+The public repository currently exposes several application-level views of this runtime. The authoritative endpoint list and request schemas are maintained in [`README.md`](./README.md).
+
+### 4.1 Enchan Cosmic — Ising / Max-Cut
+
+The `/v1/solve` endpoint maps an undirected graph into a continuous field, evolves it through the Enchan relaxation process, and reads the final state as a binary partition.
+
+This endpoint is the primary large-scale benchmark and reproducibility surface for the current public release.
+
+### 4.2 Structural Analysis
+
+Experimental structural probing endpoints expose diagnostic behavior derived from the same broader compute environment. These utilities are research features and should not be interpreted as independently validated scientific measurement instruments.
+
+### 4.3 Enchan Earth — Routing
+
+The `/v1/tsp` endpoint applies deterministic relaxation and geometric repair to routing problems in planar or Earth-coordinate settings.
+
+Its purpose in the current system is to test whether the same kernel-oriented design can support a structurally different application class from Ising / Max-Cut. Performance on one application should not, by itself, be treated as proof of universal generalization.
+
+---
+
+## 5. Public Verification Model
+
+Because the proprietary core implementation is not published, Enchan uses **observable external invariants** for third-party verification.
+
+### 5.1 S-HASH and Result Identity
+
+For fixed generated graphs, seeds, and control values, the public API returns graph and result hashes that can be used to verify whether two runs produced the same computational artifact.
+
+S-HASH therefore establishes **output reproducibility for the tested public interface**. It does not establish that a third-party implementation uses the same hidden internal mechanism, nor does it by itself establish theoretical novelty.
+
+### 5.2 Sparse Random Graph Example
+
 **Request payload**
+
 ```json
 {
   "graph": { "N": 3000, "density": 0.05 },
@@ -124,7 +166,8 @@ The `density` field is a fractional probability, not a percentage value. For exa
 }
 ```
 
-**Reproduced public API result**
+**Recorded public API result**
+
 ```text
 Cut: 123,103
 Steps: 100
@@ -136,8 +179,10 @@ S-HASH:
 f0ad852968760e68eee3660ff5261e9b9b19154d0cb66347f953e5214544cdaa
 ```
 
-#### Dense Random Graph
+### 5.3 Dense Random Graph Example
+
 **Request payload**
+
 ```json
 {
   "graph": { "N": 3000, "density": 0.5 },
@@ -146,7 +191,8 @@ f0ad852968760e68eee3660ff5261e9b9b19154d0cb66347f953e5214544cdaa
 }
 ```
 
-**Reproduced public API result**
+**Recorded public API result**
+
 ```text
 Cut: 1,147,503
 Steps: 100
@@ -158,18 +204,93 @@ S-HASH:
 974bff374bdf4e557e63205f5f4a9438edd5e8241c0ad12162364e2e8a558766
 ```
 
-### 4.3 Versatility: Enchan Earth Solver (TSP)
-While initially formulated for Ising/Max-Cut problems, the underlying Enchan Field dynamics extend to topological routing. The **Enchan Earth Solver (`/v1/tsp`)** applies the same physics-based elastic relaxation to the Traveling Salesman Problem over the Earth's curvature (Haversine metric). It guarantees a strictly planar graph (zero intersections) through deterministic geometric repair, proving that the engine's core principles generalize to complex industrial routing constraints.
+For current endpoint limits, request formats, and live examples, use [`README.md`](./README.md) as the operational source of truth.
 
 ---
 
-## 5. Conclusion
+## 6. Empirical Benchmarking
 
-Enchan bridges the gap between theoretical cosmology and practical computer science. By demonstrating that non-linear interaction laws derived from cosmological hypotheses can natively stabilize discrete optimization problems, Enchan offers a highly performant, deterministic, and zero-tuning framework for processing the world's most complex and noisy networks.
+### 6.1 SNAP Web-Google Observation
+
+Enchan Cosmic has been tested on the SNAP Web-Google graph containing 875,713 nodes and 5,105,039 edges.
+
+In the recorded comparison used by this project:
+
+- **Tabu Search baseline:** +0.63% improvement over the selected random baseline;
+- **Enchan Cosmic:** **+44.08% improvement** over the same baseline.
+
+This result is evidence that the Enchan relaxation process performed substantially better than that particular baseline implementation under the recorded test conditions.
+
+It should **not** be generalized into a claim that Tabu Search as a method is intrinsically unable to handle such graphs, or that Enchan will outperform all competing solvers under different implementations, budgets, stopping conditions, hardware, or graph distributions.
+
+The benchmark is most useful as a reproducible observation motivating further controlled comparison of the nonlinear screening mechanism.
+
+### 6.2 What Still Requires Comparative Study
+
+The following remain legitimate research questions:
+
+- whether Enchan is mathematically equivalent to an existing continuous-relaxation family;
+- whether it is best described as a variant with topology-adaptive nonlinear screening;
+- under which graph distributions screening materially changes convergence behavior;
+- how solution quality changes under matched compute budgets;
+- how the method compares against strong modern deterministic and stochastic baselines;
+- which observed advantages come from the update law versus implementation engineering.
+
+A negative result on theoretical novelty would not eliminate engineering value in reproducibility, implementation efficiency, public verification, or application-specific performance.
 
 ---
 
-## 6. References
+## 7. Document Boundaries
+
+The Enchan project separates theory, public verification, and implementation documentation deliberately.
+
+### Enchan Web OS Whitepaper — this document
+
+Describes:
+
+- public computational positioning,
+- kernel/runtime concept,
+- observable behavior,
+- reproducibility model,
+- benchmark interpretation,
+- claim and disclosure boundaries.
+
+### [`README.md`](./README.md)
+
+Serves as the operational source for:
+
+- current API endpoints,
+- request/response schemas,
+- public resource limits,
+- live usage examples,
+- current deployment details.
+
+### Enchan Field Paper
+
+Provides the theoretical interpretation of:
+
+- finite field tension,
+- nonlinear screening,
+- local interaction concentration,
+- continuous-field and graph analogies.
+
+The Whitepaper intentionally does **not** absorb every later Enchan research result. Separate research branches should remain independently testable rather than being folded into a single all-encompassing software claim.
+
+---
+
+## 8. Conclusion
+
+Enchan Web OS is best understood as an experimental **deterministic physics compute kernel and runtime** whose most mature public verification surface is currently graph optimization.
+
+Its central differentiating hypothesis is not simply that optimization can be deterministic or physics-inspired. Those ideas already exist broadly. The more specific hypothesis is that **topology-adaptive finite-tension nonlinear screening** provides a useful relaxation response when local interaction becomes highly concentrated.
+
+The current public evidence establishes reproducible behavior and several promising benchmark observations. Determining the exact relationship between Enchan and existing continuous-relaxation / Ising-machine families remains an appropriate subject for comparative research.
+
+This narrower framing is intentional: it separates what the public system demonstrably does from what future theoretical and empirical work may establish.
+
+---
+
+## 9. References
 
 1. Milgrom, M. (1983). *A modification of the Newtonian dynamics as a possible alternative to the hidden mass hypothesis*. The Astrophysical Journal.
 2. Goto, H., et al. (2019). *Combinatorial optimization by simulating adiabatic bifurcations in nonlinear Hamiltonian systems*. Science Advances.
@@ -180,5 +301,6 @@ Enchan bridges the gap between theoretical cosmology and practical computer scie
 
 ## License & Contact
 
-This repository and its API endpoints are strictly governed by the **Enchan Research & Verification License v1.0**.
-For verification use, non-commercial peer-review, or commercial integration inquiries, refer to the `README.md` or contact: `enchan.theory@gmail.com`
+This repository and its API endpoints are governed by the **Enchan Research & Verification License v1.0**.
+
+For verification use, non-commercial peer review, or commercial integration inquiries, refer to [`README.md`](./README.md) or contact: `enchan.theory@gmail.com`
