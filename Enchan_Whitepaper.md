@@ -225,6 +225,8 @@ It should **not** be generalized into a claim that Tabu Search as a method is in
 
 The benchmark is most useful as a reproducible observation motivating further controlled comparison of the nonlinear screening mechanism.
 
+A separate controlled surrogate study has since isolated one mathematical consequence of finite-tension screening: under the tested multi-basin conditions, screening preserved competing minima that were eliminated by matched unscreened linear coupling, allowing a deterministic trajectory to access a deeper local state [5]. This result concerns a standalone surrogate and does not identify, decompose, or validate any particular internal component of the Enchan Cosmic production solver.
+
 ### 6.2 What Still Requires Comparative Study
 
 The following remain legitimate research questions:
@@ -296,6 +298,7 @@ This narrower framing is intentional: it separates what the public system demons
 2. Goto, H., et al. (2019). *Combinatorial optimization by simulating adiabatic bifurcations in nonlinear Hamiltonian systems*. Science Advances.
 3. Leskovec, J., et al. (2009). *Community Structure in Large Networks: Natural Cluster Sizes and the Absence of Large Well-Defined Clusters*. Internet Mathematics. (SNAP Web-Google Dataset)
 4. Kobayashi, M. (2026). *The Enchan Field: An Effective Field Framework for Geometric Stabilization and Non-Linear Relaxation*. The Enchan Field Paper. https://github.com/EnchanTheory/The-Enchan-Field-Paper
+5. Kobayashi, M. (2026). *Finite-Tension Basin Preservation in Deterministic Relaxation: A Controlled Enchan Field Surrogate for Premature-Fixation Suppression*. Zenodo. https://doi.org/10.5281/zenodo.22444701
 
 ---
 
